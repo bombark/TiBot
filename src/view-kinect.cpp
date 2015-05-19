@@ -7,27 +7,30 @@
 #include "opencv2/nonfree/nonfree.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
- 
+
+using namespace std;
 using namespace cv;
 
 
 int main(){
 	Mat depth, image;
-	depth.create(480,640,CV_8UC3);
-	image.create(480,640,CV_8UC3);
+	depth.create(480,640,CV_16S);
+	image.create(480,640,CV_8UC1);
 
 
-	FILE* depth_fd = fopen("depth","r");
-	FILE* image_fd = fopen("image","r");
+	FILE* depth_fd = fopen("../sensors/depth","r");
+	FILE* image_fd = fopen("../sensors/image","r");
 
 
 	while(1){
 
 		fseek(depth_fd, SEEK_SET, 0);
-		fread(depth.data, sizeof(char), 640*480*3, depth_fd);
+		fread(depth.data, sizeof(short), 640*480, depth_fd);
+
+		cout << depth.at<short>(320,240) << endl;
 
 		fseek(image_fd, SEEK_SET, 0);
-		fread(image.data, sizeof(char), 640*480*3, image_fd);
+		fread(image.data, sizeof(char), 640*480, image_fd);
 
 		imshow("ddd",depth);
 		imshow("aaa",image);

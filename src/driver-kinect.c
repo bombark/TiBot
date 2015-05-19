@@ -29,7 +29,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <unistd.h>
 #include <libfreenect.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/features2d/features2d.hpp>
 
 #include <pthread.h>
 #include <math.h>
@@ -80,7 +83,7 @@ void depth_cb(freenect_device *dev, void *v_depth, uint32_t timestamp){
 	uint16_t *depth = (uint16_t*)v_depth;
 
 	pthread_mutex_lock(&gl_backbuf_mutex);
-	for (i=0; i<640*480; i++) {
+	/*for (i=0; i<640*480; i++) {
 		int pval = t_gamma[depth[i]];
 		int lb = pval & 0xff;
 		switch (pval>>8) {
@@ -120,10 +123,10 @@ void depth_cb(freenect_device *dev, void *v_depth, uint32_t timestamp){
 				depth_mid[3*i+2] = 0;
 				break;
 		}
-	}
+	}*/
 	got_depth++;
 	fseek(depth_fd, SEEK_SET, 0);
-	fwrite(depth_mid, sizeof(char), 640*480*3, depth_fd);
+	fwrite(depth, sizeof(uint16_t), 640*480, depth_fd);
 
 
 	//pthread_cond_signal(&gl_frame_cond);
@@ -133,6 +136,8 @@ void depth_cb(freenect_device *dev, void *v_depth, uint32_t timestamp){
 
 
 void rgb_cb(freenect_device *dev, void *rgb, uint32_t timestamp){
+	static unsigned char res[640*480];
+
 	pthread_mutex_lock(&gl_backbuf_mutex);
 
 	// swap buffers
@@ -142,8 +147,14 @@ void rgb_cb(freenect_device *dev, void *rgb, uint32_t timestamp){
 	rgb_mid = (uint8_t*)rgb;
 
 
+	int i;
+	for (i=0; i<640*480; i++){
+		res[i] = (rgb_mid[i*3]+rgb_mid[i*3+1]+rgb_mid[i*3+2])/3;
+	}
+
+
 	fseek(image_fd, SEEK_SET, 0);
-	fwrite(rgb_mid, sizeof(char), 640*480*3, image_fd);
+	fwrite(res, sizeof(char), 640*480, image_fd);
 
 	got_rgb++;
 
