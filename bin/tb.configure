@@ -1,0 +1,7 @@
+#!/bin/bash
+
+url=$(tisys.ctx "Framework");
+
+echo "class='Robot'" > "$url/robot/.sysobj.ti"
+mkdir -p "$url/robot/sensors"
+mkdir -p "$url/robot/bin"
