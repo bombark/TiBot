@@ -1,4 +1,4 @@
-all: ../robot/bin/driver-kinect ../robot/bin/view-kinect ../robot/bin/driver-aria ../robot/bin/image-process
+all: ../robot/bin/driver-kinect ../robot/bin/view-kinect ../robot/bin/driver-aria ../robot/bin/image-process ../robot/bin/driver-camera
 
 ../robot/bin/driver-kinect: driver-kinect.c
 	gcc driver-kinect.c -o ../robot/bin/driver-kinect -lfreenect -lpthread -lm
@@ -8,6 +8,9 @@ all: ../robot/bin/driver-kinect ../robot/bin/view-kinect ../robot/bin/driver-ari
 
 ../robot/bin/image-process: image-process.cpp
 	g++ image-process.cpp -o ../robot/bin/image-process `pkg-config --cflags --libs opencv` -ltiobj -ltisys
+
+../robot/bin/driver-camera: driver-camera.cpp
+	g++ driver-camera.cpp -o ../robot/bin/driver-camera `pkg-config --cflags --libs opencv` -ltiobj -ltisys
 
 ../robot/bin/driver-aria: driver-aria.cpp
 	g++ driver-aria.cpp -o ../robot/bin/driver-aria -lAria -ltiobj

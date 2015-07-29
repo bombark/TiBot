@@ -1,0 +1,40 @@
+<html>
+
+<body>
+
+
+	<canvas id="left" width="640" height="480"></canvas> 
+
+
+
+	<script>
+
+	var canvas = document.getElementById('left');
+	var context = canvas.getContext('2d');
+
+	var processor = setInterval(function(){
+		var imageObj = new Image();
+		imageObj.onload = function() {
+			context.drawImage(imageObj, 0, 0);
+		};
+		imageObj.src = 'video1.jpg?' + (new Date()).getTime();
+	}, 200);
+
+
+	</script>
+
+	<script>
+	document.onkeydown = function(e) {
+		switch (e.keyCode) {
+		case 37:
+			alert('a');
+			break;
+		case 39:
+			alert('b');
+			break;
+		}
+	};
+	</script>
+
+
+</body></html>
